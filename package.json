@@ -18,5 +18,8 @@
   "homepage": "https://github.com/grecha2003/ip_Addres_Tracker#readme",
   "devDependencies": {
     "parcel-bundler": "^1.12.5"
+  },
+  "dependencies": {
+    "leaflet": "^1.7.1"
   }
 }
