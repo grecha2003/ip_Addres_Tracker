@@ -1,6 +1,12 @@
+import '@babel/polyfill';
 import 'leaflet/dist/leaflet.css';
 import icon from '../images/icon-location.svg';
-import { addTileLayer, validateIp } from './helpers/index.js';
+import {
+  addTileLayer,
+  validateIp,
+  getAddress,
+  addOffset,
+} from './helpers/index.js';
 
 const ipInput = document.querySelector('.search-bar__input');
 const btn = document.querySelector('.search-bar__btn');
@@ -28,11 +34,7 @@ L.marker([51.505, -0.09], { icon: markerIcon }).addTo(map);
 
 function getData() {
   if (validateIp(ipInput.value)) {
-    fetch(
-      `https://geo.ipify.org/api/v2/country,city?apiKey=at_3Hk6cKlPgj5M8dWbJAToHfNi2LLWT&ipAddress=${ipInput.value}`
-    )
-      .then((response) => response.json())
-      .then(setInfo);
+    getAddress(ipInput.value).then(setInfo);
   }
 }
 
@@ -51,6 +53,14 @@ function setInfo(mapData) {
   timezoneInfo.innerText = timezone;
   ispInfo.innerText = mapData.isp;
 
-  map.setView([lat, lng]).addTo(map);
-  L.marker([lat, lng], {icon: markerIcon}).addTo(map);
+  map.setView([lat, lng]);
+  L.marker([lat, lng], { icon: markerIcon }).addTo(map);
+
+  if (matchMedia('(max-width: 1023px)').matches) {
+    addOffset(map);
+  }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  getAddress('8.8.8.8').then(setInfo);
+});
